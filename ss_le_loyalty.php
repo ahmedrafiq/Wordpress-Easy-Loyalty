@@ -663,40 +663,40 @@
                    	endif;
           		?>
           		</select>
-          		<!--<div class="clear"><br /></div>-->
+          		<div class="clear"></div>
           	<?php else: ?>
                 <input type="hidden" name="campaign_id" value="<?=esc_attr($o->ss_le_get_setting('default_campaign'));?>" />
             <?php endif; ?>
           	<label for="card_number" class="ui-hidden-accessible">Card Number</label>
           	<input type="text" name="card_number" id="card_number" maxlength="10" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Card Number" />
            	<?php if(esc_attr($o->ss_le_get_setting('show_password'))=='1'): ?>
-                <!--<div class="clear"></div>-->
+                <div class="clear"></div>
                 <label for="customer_password" class="ui-hidden-accessible">Password</label>
                 <input type="password" name="customer_password" id="customer_password" maxlength="20" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
-                <!--<div class="clear"></div>-->
+                <div class="clear"></div>
                 <label for="customer_password2" class="ui-hidden-accessible">Password Verify</label>
                 <input type="password" name="customer_password2" id="customer_password2" maxlength="20" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
          	<?php endif; ?>
-        	<!--<div class="clear"><br /></div>-->
+        	<div class="clear"></div>
         	<label for="firstName" class="ui-hidden-accessible">First Name</label><input type="text" name="firstName" id="firstName" maxlength="60" value="<?php if(!empty($user_profile['first_name'])) echo $user_profile['first_name']; ?>" placeholder="First Name" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
-            <!--<div class="clear"></div>-->
+            <div class="clear"></div>
             <label for="lastName" class="ui-hidden-accessible">Last Name</label><input type="text" name="lastName" id="lastName" maxlength="60" value="<?php if(!empty($user_profile['last_name'])) echo $user_profile['last_name']; ?>" placeholder="Last Name" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
-            <!--<div class="clear"></div>-->
+            <div class="clear"></div>
             <label for="email" class="ui-hidden-accessible">Email Address</label><input type="text" name="email" id="email" maxlength="60" value="<?php if(!empty($user_profile['email'])) echo $user_profile['email']; ?>" placeholder="Email Address" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
-            <!--<div class="clear"></div>-->
+            <div class="clear"></div>
             <label for="email2" class="ui-hidden-accessible">Email Verify</label><input type="text" name="email2" id="email2" maxlength="60" value="<?php if(!empty($user_profile['email'])) echo $user_profile['email']; ?>" placeholder="Email Address" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
-            <!--<div class="clear"></div>-->
+            <div class="clear"></div>
             <?php if($o->ss_le_get_setting('show_phone')=='1'): ?>
                 <label for="phone" class="ui-hidden-accessible">Phone #</label><input type="text" name="phone" maxlength="15" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Phone #" />
                 <div class="clear"></div>
             <?php endif; ?>
             <?php if($o->ss_le_get_setting('show_address')=='1'): ?>
                 <label for="address1" class="ui-hidden-accessible">Address</label><input type="text" name="address1" id="address1" maxlength="60" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Address" />
-                <!--<div class="clear"></div>-->
+                <div class="clear"></div>
                 <label for="address2" class="ui-hidden-accessible">Address2</label><input type="text" name="address2" id="address2" maxlength="60" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Address2" />
                 <div class="clear"></div>
                 <label class="ui-hidden-accessible">City</label><input type="text" name="city" id="city" maxlength="60" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="City" />
-                <!--<div class="clear"></div>-->
+                <div class="clear"></div>
                 <label for="state" class="ui-hidden-accessible">State</label>
                 <?php if($o->ss_le_get_setting('show_country')=='1'): ?>
                 <input type="text" name="state" id="state" maxlength="60" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="State/Province" />
@@ -711,9 +711,9 @@
                  	?>
             	</select>
             	<?php endif; ?>
-          		<!--<div class="clear"></div>-->
-             	<label class="ui-hidden-accessible">Zipcode</label><input type="text" name="zip" id="zip" maxlength="6" value="" style="width:70px;" placeholder="Zipcode" />
-              	<!--<div class="clear"></div>-->
+          		<div class="clear"></div>
+             	<label class="ui-hidden-accessible">Zipcode</label><input type="text" name="zip" id="zip" maxlength="6" value="" placeholder="Zipcode" />
+              	<div class="clear"></div>
        		<?php endif; ?>
         	<?php if(esc_attr($o->ss_le_get_setting('show_country'))=='1'): ?>
            		<label class="ui-hidden-accessible">Country</label>
@@ -726,11 +726,11 @@
                     	}
                   	?>
              	</select>
-               	<!--<div class="clear"></div>-->
+               	<div class="clear"></div>
            	<?php endif; ?>
           	<?php if(esc_attr($o->ss_le_get_setting('show_birthday'))=='1'): ?>
-             	<label>Birthday</label>
-             	<div class="ui-select-inline" data-inline="true">
+             	<label class="ui-hidden-accessible">Birthday</label>
+             	<!--<div class="ui-select-inline" data-inline="true">-->
            		<select name="birthMonth"><option value="">--</option>
               		<?php
               			$months = (array) $o->_months;
@@ -757,11 +757,11 @@
 					}
 				?>
 				</select>
-				</div>
+				<!--</div>-->
 			<?php endif; ?>
-			<!--<div class="clear"><br /></div>-->
+			<div class="clear"><br /></div>
 		<button type="submit" id="ss_le_register" class="ss_le_button">Register</button>
-		<!--<div class="clear"></div>-->
+		<div class="clear"></div>
 		</fieldset>
 		</form>
 	<?php
