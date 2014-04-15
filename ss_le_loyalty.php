@@ -77,6 +77,10 @@
      	delete_option($this->_optionsName.'default_campaign');
         delete_option($this->_optionsName.'balance_campaign');
         delete_option($this->_optionsName.'success_url');
+		delete_option($this->_optionsName.'require_password');
+		delete_option($this->_optionsName.'auto_add_points');
+		delete_option($this->_optionsName.'free_enroll');
+		delete_option($this->_optionsName.'default_campaign_name');
     }
  	
  	public function ss_le_resources() {
@@ -121,7 +125,9 @@
           	'success_url'           => '',
           	'show_password'         => '',
 			'require_password'		=> '',
-			'auto_add_points'		=> ''
+			'auto_add_points'		=> '',
+			'free_enroll'			=> '',
+			'default_campaign_name' => 'Default Campaign'
 		);
 		$this->_settings = wp_parse_args($this->_settings, $defaults);
 	}
@@ -169,6 +175,10 @@
 				<tr valign="top">
                 	<th colspan="2"><h2>Register Form Settings</h2></th>
             	</tr>
+                <tr valign="top">
+               		<th scope="row">Free Enroll:</th>
+            		<td><input type="checkbox" name="<?php echo $this->_optionsName; ?>[free_enroll]" value="1" class="code" id="<?php echo $this->_optionsName; ?>_free_enroll"<?php if(esc_attr($this->ss_le_get_setting('free_enroll'))=='1') echo ' checked'; ?> /></td>
+            	</tr>
               	<tr valign="top">
                		<th scope="row">Show Campaigns Dropdown:</th>
             		<td><input type="checkbox" name="<?php echo $this->_optionsName; ?>[show_campaigns]" value="1" class="code" id="<?php echo $this->_optionsName; ?>_show_campaigns"<?php if(esc_attr($this->ss_le_get_setting('show_campaigns'))=='1') echo ' checked'; ?> /></td>
@@ -178,7 +188,11 @@
                		<td><input type="text" name="<?php echo $this->_optionsName; ?>[default_campaign]" style="width:250px;" value="<?php echo esc_attr($this->ss_le_get_setting('default_campaign')); ?>" id="<?php echo $this->_optionsName; ?>_default_campaign" /></td>
              	</tr>
                 <tr valign="top">
-               		<th scope="row">Enrollment Campaign ID(s) Auto Add Points:</th>
+               		<th scope="row">Default Enrollment Campaign Label:</th>
+               		<td><input type="text" name="<?php echo $this->_optionsName; ?>[default_campaign_name]" style="width:250px;" value="<?php echo esc_attr($this->ss_le_get_setting('default_campaign_name')); ?>" id="<?php echo $this->_optionsName; ?>_default_campaign_name" /></td>
+             	</tr>
+                <tr valign="top">
+               		<th scope="row">Enrollment Campaign ID(s) Auto Add Amount:</th>
                		<td><input type="text" name="<?php echo $this->_optionsName; ?>[auto_add_points]" style="width:250px;" value="<?php echo esc_attr($this->ss_le_get_setting('auto_add_points')); ?>" id="<?php echo $this->_optionsName; ?>_auto_add_points" /></td>
              	</tr>
              	
@@ -633,10 +647,14 @@
          	}
            	$loginUrl = $facebook->getLoginUrl(array('display'=>'popup','scope'=>'email,user_about_me,user_birthday','redirect_uri'=>$fb_redirect));
   		}
-      	if( !empty($_POST['card_number']) ) {
+      	if( !empty($_POST['action']) ) {
+			echo $url;
+
         	$result = $o->sendRegistration($_POST);
             if($result['@attributes']['status']!="error"){
-            	if(!empty($url)) wp_redirect(get_permalink($url));
+            	//if(!empty($url)) wp_redirect(get_permalink($url));
+				if(!empty($url)){ echo '<script>window.location = "'.get_permalink($url).'";</script>'; exit;}
+				
                 $error_msg = '<div class="success">Congratulations you have successfully registered your rewards card. You card is now active and you can start building points.</div>';
               	
 			} else {
@@ -651,9 +669,10 @@
 		<form name="ss_le_register" id="ss_le_register" method="post" action="<?php echo str_replace( '%7E', '~', $_SERVER['REQUEST_URI']); ?>" enctype="multipart/form-data">
         <fieldset data-role="fieldcontain">
      		<!--<div class="clear"><br /></div>-->
+            <input type="hidden" name="action" value="register" />
       		<?php if(esc_attr($o->ss_le_get_setting('show_campaigns'))=='1'): ?>
-         		<label for="campaign_id">Default Campaign: </label>
-           		<select name="campaign_id" id="campaigns">
+         		<label for="campaign_id"><?php echo esc_attr($o->ss_le_get_setting('default_campaign_name'));?></label>
+           		<select name="campaign_id" id="campaigns" style="width:200px;">
           		<?php
                 	$campaigns = $o->_campaigns;
                  	if($campaigns['status']!='error'):     
@@ -665,10 +684,12 @@
           		</select>
           		<div class="clear"></div>
           	<?php else: ?>
-                <input type="hidden" name="campaign_id" value="<?=esc_attr($o->ss_le_get_setting('default_campaign'));?>" />
+                <input type="hidden" name="campaign_id" value="<?php echo esc_attr($o->ss_le_get_setting('default_campaign'));?>" />
             <?php endif; ?>
+            <?php if(esc_attr($o->ss_le_get_setting('free_enroll'))!='1'): ?>
           	<label for="card_number" class="ui-hidden-accessible">Card Number</label>
           	<input type="text" name="card_number" id="card_number" maxlength="10" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Card Number" />
+            <?php endif;?>
            	<?php if(esc_attr($o->ss_le_get_setting('show_password'))=='1'): ?>
                 <div class="clear"></div>
                 <label for="customer_password" class="ui-hidden-accessible">Password</label>
@@ -717,7 +738,7 @@
        		<?php endif; ?>
         	<?php if(esc_attr($o->ss_le_get_setting('show_country'))=='1'): ?>
            		<label class="ui-hidden-accessible">Country</label>
-              	<select id="country" name="country">
+              	<select id="country" name="country" style="width:200px;">
                 	<option value="">Select Country</option>
                   	<?php
                   		$countries = $o->_countries;
@@ -812,8 +833,10 @@
       	$new_customer['first_name']               	= $request['firstName'];
       	$new_customer['last_name']               	= $request['lastName'];
        	$new_customer['email']                 		= $request['email'];
-       	$new_customer['card_number']            	= $request['card_number'];
-     	$new_customer['code']                     	= $request['card_number'];
+		if($this->ss_le_get_setting('free_enroll')!='1'){
+			$new_customer['card_number']            	= $request['card_number'];
+			$new_customer['code']                     	= $request['card_number'];
+		}
       	$new_customer['customer_password']       	= $request['customer_password'];
       	//$new_customer['auto_add']               	= '';
      	if($this->ss_le_get_setting('show_phone')=='1'){
@@ -833,6 +856,14 @@
         	$new_customer['custom_date'] 			= $request['birthyear'].'-'.$request['birthmonth'].'-'.$request['birthday'];
         }
      	$response = $this->sendData($new_customer);
+		
+		/*echo '<pre>';
+		print_r($new_customer);
+		echo '</pre>';
+		echo '<pre>';
+		print_r($response);
+		echo '</pre>';
+		exit;*/
 
 		if($response['@attributes']['status']=='success'){
 			if($new_customer['campaign_id']!='' and $this->ss_le_get_setting('auto_add_points')!=false){
