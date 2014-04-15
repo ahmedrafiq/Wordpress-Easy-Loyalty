@@ -49,9 +49,9 @@
 /*#ss_le_register label{width:150px;display:block;float:left;margin-bottom:10px;}
 #ss_le_register input{width:150px;display:block;float:left;clear:right;margin-bottom:10px;}*/
 
-#ss_le_register label{width:125px;display:block;float:left;margin-bottom:10px;}
+#ss_le_register label{width:160px;display:block;float:left;margin-bottom:10px;}
 #ss_le_register input,select{display:block;float:left;margin-bottom:10px;}
-#ss_le_register input{width:150px;}
+#ss_le_register input{width:200px;}
 
 #ss_le_top_left{display:block;text-align:left;}
 
