@@ -853,7 +853,7 @@
       		$new_customer['country'] 				= $request['country'];
       	}
         if($this->ss_le_get_setting('show_birthday')=='1'){
-        	$new_customer['custom_date'] 			= $request['birthyear'].'-'.$request['birthmonth'].'-'.$request['birthday'];
+        	$new_customer['custom_date'] 			= $request['birthYear'].'-'.$request['birthMonth'].'-'.$request['birthDay'];
         }
      	$response = $this->sendData($new_customer);
 		
